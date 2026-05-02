@@ -1,36 +1,47 @@
-// textNode.js
-
-import { useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import { useState, useEffect, useMemo } from "react";
+import { BaseNode } from "./BaseNode";
+import { useUpdateNodeInternals } from "reactflow";
 
 export const TextNode = ({ id, data }) => {
-  const [currText, setCurrText] = useState(data?.text || '{{input}}');
+  const [text, setText] = useState(data?.text || "{{input}}");
 
-  const handleTextChange = (e) => {
-    setCurrText(e.target.value);
+  const updateNodeInternals = useUpdateNodeInternals();
+
+  const extractVariables = (value) => {
+    const regex = /{{\s*([a-zA-Z_$][a-zA-Z0-9_$]*)\s*}}/g;
+    const matches = [...value.matchAll(regex)].map((m) => m[1]);
+    return [...new Set(matches)];
+  };
+
+  const variables = useMemo(() => extractVariables(text), [text]);
+
+  useEffect(() => {
+    // Recompute handle positions/count when variables in {{varName}} change.
+    updateNodeInternals(id);
+  }, [id, variables, updateNodeInternals]);
+
+  const handleChange = (e) => {
+    setText(e.target.value);
+
+    // auto resize
+    e.target.style.height = "auto";
+    e.target.style.height = e.target.scrollHeight + "px";
   };
 
   return (
-    <div className="w-52 h-20 border border-border-color bg-surface rounded-xl p-3">
-      <div>
-        <span className="text-primary font-semibold">Text</span>
-      </div>
-      <div className="mt-2">
-        <label className="block text-sm text-secondary">
-          Text:
-          <input 
-            type="text" 
-            value={currText} 
-            onChange={handleTextChange}
-            className="ml-2 px-2 py-1 bg-bg text-primary border border-border-color rounded text-xs"
-          />
-        </label>
-      </div>
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`${id}-output`}
+    <BaseNode
+      id={id}
+      title="Text"
+      inputs={variables.map((v) => ({ id: v }))}
+      outputs={[{ id: "output" }]}
+    >
+      <textarea
+        value={text}
+        onChange={handleChange}
+        rows={1}
+        className="w-full resize-none px-2 py-1 bg-bg text-primary border border-border rounded text-xs overflow-hidden"
+        placeholder="Enter text with {{variables}}"
       />
-    </div>
+    </BaseNode>
   );
-}
+};

@@ -1,48 +1,30 @@
-// outputNode.js
-
-import { useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import { useState } from "react";
+import { BaseNode } from "./BaseNode";
 
 export const OutputNode = ({ id, data }) => {
-  const [currName, setCurrName] = useState(data?.outputName || id.replace('customOutput-', 'output_'));
-  const [outputType, setOutputType] = useState(data.outputType || 'Text');
-
-  const handleNameChange = (e) => {
-    setCurrName(e.target.value);
-  };
-
-  const handleTypeChange = (e) => {
-    setOutputType(e.target.value);
-  };
+  const [name, setName] = useState(data?.outputName || "output");
+  const [type, setType] = useState(data?.outputType || "Text");
 
   return (
-    <div className="w-52 h-20 border border-border-color bg-surface rounded-xl p-3">
-      <Handle
-        type="target"
-        position={Position.Left}
-        id={`${id}-value`}
+    <BaseNode
+      id={id}
+      title="Output"
+      inputs={[{ id: "value" }]}
+    >
+      <input
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        className="px-2 py-1 bg-bg text-primary border border-border rounded text-xs"
       />
-      <div>
-        <span className="text-primary font-semibold">Output</span>
-      </div>
-      <div className="space-y-2">
-        <label className="block text-sm text-secondary">
-          Name:
-          <input 
-            type="text" 
-            value={currName} 
-            onChange={handleNameChange}
-            className="ml-2 px-2 py-1 bg-bg text-primary border border-border-color rounded text-xs"
-          />
-        </label>
-        <label className="block text-sm text-secondary">
-          Type:
-          <select value={outputType} onChange={handleTypeChange} className="ml-2 px-2 py-1 bg-bg text-primary border border-border-color rounded text-xs">
-            <option value="Text">Text</option>
-            <option value="File">Image</option>
-          </select>
-        </label>
-      </div>
-    </div>
+
+      <select
+        value={type}
+        onChange={(e) => setType(e.target.value)}
+        className="px-2 py-1 bg-bg text-primary border border-border rounded text-xs"
+      >
+        <option>Text</option>
+        <option>Image</option>
+      </select>
+    </BaseNode>
   );
-}
+};
