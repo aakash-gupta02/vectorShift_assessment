@@ -9,7 +9,7 @@ export const InputNode = ({ id, data }) => {
     <BaseNode
       id={id}
       title="Input"
-      outputs={[{ id: name }]}
+      outputs={[{ id: name, label: "Output" }]}
     >
       <input
         value={name}

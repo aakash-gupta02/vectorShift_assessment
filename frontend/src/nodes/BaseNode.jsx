@@ -9,7 +9,6 @@ export const BaseNode = ({
 }) => {
   return (
     <div className="bg-surface border border-border rounded-xl shadow-node p-3 min-w-[200px]">
-
       {/* Inputs */}
       {inputs.map((input, index) => {
         const top = `${((index + 1) * 100) / (inputs.length + 1)}%`;
@@ -24,10 +23,9 @@ export const BaseNode = ({
             />
 
             <span
-              className="absolute text-xs text-secondary"
+              className="absolute right-full mr-2 text-xs text-secondary whitespace-nowrap pointer-events-none"
               style={{
                 top,
-                left: "-40px",
                 transform: "translateY(-50%)",
               }}
             >
