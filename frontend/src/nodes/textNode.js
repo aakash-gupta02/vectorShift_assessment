@@ -32,7 +32,7 @@ export const TextNode = ({ id, data }) => {
     <BaseNode
       id={id}
       title="Text"
-      inputs={variables.map((v) => ({ id: v }))}
+      inputs={variables.map(v => ({ id: v, label: v }))}
       outputs={[{ id: "output" }]}
     >
       <textarea
